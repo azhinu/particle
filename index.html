@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Meta Tags -->
+    <title>parcticle - Service Dashboard</title>
+    <meta name="description" content="Simple bookmark tab for managing your services.">
+    <meta name="keywords" content="dashboard, services">
+    <meta name="author" content="parcticle">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://particle.myserver.tld/">
+    <meta property="og:title" content="parcticle - Service Dashboard">
+    <meta property="og:description" content="Simple bookmark tab">
+    <meta property="og:image" content="https://particle.myserver.tld/static/preview.webp">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://particle.myserver.tld/">
+    <meta property="twitter:title" content="parcticle - Service Dashboard">
+    <meta property="twitter:description" content="Simple bookmark tab">
+    <meta property="twitter:image" content="https://particle.myserver.tld/static/preview.webp">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="static/icon.png">
+    <link rel="apple-touch-icon" href="static/icon.png">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside id="sidebar" class="sidebar">
+        <!-- System Controls -->
+        <div class="sidebar-controls">
+            <button id="toggleBtn" class="control-btn" title="Toggle sidebar">
+                <img src="static/right.svg" alt="Toggle" id="toggleIcon">
+            </button>
+            <button id="lockBtn" class="control-btn" title="Lock sidebar">
+                <img src="static/lock.svg" alt="Lock">
+            </button>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="sidebar-nav">
+            <button id="homeBtn" class="nav-btn active" data-view="home">
+                <img src="static/home.svg" alt="Home">
+                <span class="nav-label">Home</span>
+            </button>
+            
+            <!-- Services will be dynamically loaded here -->
+            <div id="servicesList"></div>
+        </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main id="mainContent" class="main-content">
+        <!-- Home View -->
+        <div id="homeView" class="view active">
+            <div class="greeting-container">
+                <h1 id="greeting" class="greeting"></h1>
+            </div>
+        </div>
+
+        <!-- Services Container (for iframes) -->
+        <div id="servicesContainer"></div>
+    </main>
+
+    <!-- Overlay for closing sidebar when clicked outside -->
+    <div id="overlay" class="overlay"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>

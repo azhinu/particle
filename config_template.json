@@ -1,0 +1,54 @@
+{
+  "services": [
+    {
+      "name": "Feishin",
+      "icon": "static/feishin.png",
+      "link": "https://feishin.home.mydomain.tld"
+    },
+    {
+      "name": "Kima",
+      "icon": "static/kima.png",
+      "link": "https://kima.home.mydomain.tld"
+    },
+    {
+      "name": "Aurral",
+      "icon": "static/aurralogo.png",
+      "link": "https://aurral.home.mydomain.tld"
+    },
+    {
+      "name": "Spotiarr",
+      "icon": "static/spotiarr.png",
+      "link": "https://spotiarr.home.mydomain.tld"
+    },
+    {
+      "name": "Seerr",
+      "icon": "static/seerr.png",
+      "link": "https://seerr.home.mydomain.tld"
+    },
+    {
+      "name": "Jellyfin",
+      "icon": "static/jellyfin.png",
+      "link": "https://jellyfin.home.mydomain.tld"
+    },
+    {
+      "name": "Soulseek",
+      "icon": "static/soulseek.png",
+      "link": "https://slskd.home.mydomain.tld"
+    },
+    {
+      "name": "Kinklist",
+      "icon": "static/kinklist2.png",
+      "link": "https://kinklist.home.mydomain.tld"
+    },
+    {
+      "name": "Wishlist",
+      "icon": "static/wishlist.png",
+      "link": "https://wishlist.home.mydomain.tld"
+    },
+    {
+      "name": "SimpleLogin",
+      "icon": "static/simplelogin.png",
+      "link": "https://simplelogin.home.mydomain.tld"
+    }
+  ]
+}

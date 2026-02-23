@@ -9,7 +9,7 @@
 }
 
 :root {
-    --sidebar-collapsed-width: 80px;
+    --sidebar-collapsed-width: 55px;
     --sidebar-expanded-width: 280px;
     --bg-primary: #0f0f0f;
     --sidebar-bg: rgba(31, 40, 55, 0.85);
@@ -155,7 +155,6 @@ body {
 /* Sidebar Navigation */
 .sidebar-nav {
     flex: 1;
-    padding: 12px 0;
     overflow-y: auto;
     overflow-x: hidden;
 }
@@ -181,7 +180,7 @@ body {
     display: flex;
     align-items: center;
     gap: 16px;
-    padding: 0 22px;
+    padding: 0 8px;
     cursor: pointer;
     transition: background-color 0.2s ease;
     color: var(--text-primary);

@@ -30,6 +30,7 @@ body {
     height: 100vh;
     position: relative;
     touch-action: pan-y;
+    color-scheme: dark;
 }
 
 /* Sidebar Styles */
@@ -159,6 +160,8 @@ body {
     overflow-y: auto;
     overflow-x: hidden;
     position: relative;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
 /* Fade effect at top */
@@ -191,7 +194,7 @@ body {
 }
 
 .sidebar-nav::-webkit-scrollbar {
-    width: 4px;
+    width: 0;
 }
 
 .sidebar-nav::-webkit-scrollbar-track {
@@ -199,7 +202,7 @@ body {
 }
 
 .sidebar-nav::-webkit-scrollbar-thumb {
-    background: var(--border-color);
+    background: transparent;
     border-radius: 2px;
 }
 

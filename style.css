@@ -75,7 +75,7 @@ body {
 
 /* Sidebar System Controls */
 .sidebar-controls {
-    padding: 24px 20px;
+    padding: 4px 10px;
     display: flex;
     gap: 8px;
     border-bottom: 1px solid var(--border-color);

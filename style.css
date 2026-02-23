@@ -29,6 +29,7 @@ body {
     overflow: hidden;
     height: 100vh;
     position: relative;
+    touch-action: pan-y;
 }
 
 /* Sidebar Styles */
@@ -157,6 +158,36 @@ body {
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
+    position: relative;
+}
+
+/* Fade effect at top */
+.sidebar-nav::before {
+    content: '';
+    position: sticky;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--sidebar-bg) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 10;
+    display: block;
+}
+
+/* Fade effect at bottom */
+.sidebar-nav::after {
+    content: '';
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 40px;
+    background: linear-gradient(to top, var(--sidebar-bg) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 10;
+    display: block;
+    margin-top: -40px;
 }
 
 .sidebar-nav::-webkit-scrollbar {
@@ -225,7 +256,8 @@ body {
 
 .sidebar:hover .nav-label,
 .sidebar.expanded .nav-label,
-.sidebar.locked:not(.collapsed) .nav-label {
+.sidebar.locked:not(.collapsed) .nav-label,
+.sidebar.mobile-visible .nav-label {
     opacity: 1;
 }
 
@@ -302,7 +334,7 @@ body {
     border: none;
 }
 
-/* Overlay */
+/* Desktop styles */
 .overlay {
     position: fixed;
     top: 0;
@@ -324,18 +356,34 @@ body {
 /* Responsive adjustments */
 @media (max-width: 768px) {
     :root {
-        --sidebar-collapsed-width: 0;
+        --sidebar-collapsed-width: 55px;
         --sidebar-expanded-width: 80%;
     }
 
-    .sidebar {
-        transform: translateX(-100%);
-        transition: transform var(--transition-speed) ease;
+    /* Hide control buttons on mobile */
+    .sidebar-controls {
+        display: none;
     }
 
-    .sidebar.expanded,
-    .sidebar.locked:not(.collapsed) {
+    .sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 100vh;
+        width: var(--sidebar-expanded-width);
+        transform: translateX(-100%);
+        transition: transform var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 1001;
+    }
+
+    /* Mobile: sidebar visible and expanded */
+    .sidebar.mobile-visible {
         transform: translateX(0);
+    }
+
+    /* Mobile: sidebar hidden */
+    .sidebar:not(.mobile-visible) {
+        transform: translateX(-100%);
     }
 
     .main-content {
@@ -344,6 +392,25 @@ body {
 
     .greeting {
         font-size: 32px;
+    }
+
+    /* Overlay adjustments for mobile */
+    .overlay {
+        z-index: 1000;
+    }
+
+    /* Smooth swipe animations */
+    @supports (animation-timeline: view()) {
+        .sidebar {
+            animation: none;
+        }
+    }
+
+    /* Touch feedback - disable default */
+    .sidebar, .nav-btn, .control-btn {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        user-select: none;
     }
 }
 
@@ -365,5 +432,101 @@ body {
 @keyframes spin {
     to {
         transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+/* Swipe animation enhancement */
+@media (max-width: 768px) {
+    @keyframes slideInFromLeft {
+        from {
+            transform: translateX(-100%);
+        }
+        to {
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes slideOutToLeft {
+        from {
+            transform: translateX(0);
+        }
+        to {
+            transform: translateX(-100%);
+        }
+    }
+
+    .sidebar {
+        will-change: transform;
+    }
+}
+
+/* Mobile Swipe Hint */
+.swipe-hint {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    display: none;
+    z-index: 500;
+    animation: fadeInHint 0.6s ease-out;
+}
+
+.swipe-hint.visible {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+}
+
+.swipe-hint-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 6px;
+    opacity: 0.8;
+    flex-shrink: 0;
+    filter: brightness(0) saturate(100%) invert(76%) sepia(7%) saturate(846%) hue-rotate(177deg) brightness(92%) contrast(86%);
+}
+.swipe-hint-label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+@keyframes fadeInHint {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeOutHint {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+}
+
+.swipe-hint.hide {
+    animation: fadeOutHint 0.4s ease-out forwards;
+}
+
+/* Desktop: hide swipe hint */
+@media (min-width: 769px) {
+    .swipe-hint {
+        display: none !important;
     }
 }

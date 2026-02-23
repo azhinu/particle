@@ -360,9 +360,14 @@ body {
         --sidebar-expanded-width: 80%;
     }
 
-    /* Hide control buttons on mobile */
+    /* Show only toggle button on mobile */
     .sidebar-controls {
-        display: none;
+        display: flex;
+    }
+
+    /* Hide lock button on mobile */
+    #lockBtn {
+        display: none !important;
     }
 
     .sidebar {
@@ -370,24 +375,20 @@ body {
         left: 0;
         top: 0;
         height: 100vh;
-        width: var(--sidebar-expanded-width);
-        transform: translateX(-100%);
-        transition: transform var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+        width: var(--sidebar-collapsed-width);
+        transition: width var(--transition-speed) ease;
         z-index: 1001;
+        /* No transform, sidebar is always visible but minimized */
     }
 
-    /* Mobile: sidebar visible and expanded */
+    /* Mobile: sidebar expanded */
     .sidebar.mobile-visible {
-        transform: translateX(0);
-    }
-
-    /* Mobile: sidebar hidden */
-    .sidebar:not(.mobile-visible) {
-        transform: translateX(-100%);
+        width: var(--sidebar-expanded-width);
     }
 
     .main-content {
-        margin-left: 0;
+        margin-left: var(--sidebar-collapsed-width);
+        transition: margin-left var(--transition-speed) ease;
     }
 
     .greeting {
@@ -399,11 +400,13 @@ body {
         z-index: 1000;
     }
 
-    /* Smooth swipe animations */
-    @supports (animation-timeline: view()) {
-        .sidebar {
-            animation: none;
-        }
+    /* Overlay only shows when sidebar is expanded on mobile */
+    .overlay {
+        display: none;
+    }
+
+    .sidebar.mobile-visible ~ .overlay {
+        display: block;
     }
 
     /* Touch feedback - disable default */

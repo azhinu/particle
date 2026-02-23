@@ -52,11 +52,12 @@ async function init() {
     // Setup event listeners
     setupEventListeners();
 
-    // Initialize sidebar visibility for mobile (hidden by default)
+    // Initialize sidebar visibility for mobile (visible but minimized by default)
     if (state.isMobile) {
         state.sidebarVisible = false;
         elements.sidebar.classList.remove('mobile-visible');
-        elements.swipeHint.classList.add('visible');
+        // Don't show swipe hint since we have a button now
+        elements.swipeHint.classList.remove('visible');
     }
 
     // Set greeting
@@ -99,14 +100,14 @@ function setupEventListeners() {
         const wasMobile = state.isMobile;
         state.isMobile = window.innerWidth <= 768;
         
-        // If transitioning to mobile, hide sidebar but show hint
+        // If transitioning to mobile, show sidebar minimized
         if (state.isMobile && !wasMobile) {
             state.sidebarVisible = false;
             state.sidebarExpanded = false;
             elements.sidebar.classList.remove('mobile-visible', 'expanded');
             elements.overlay.classList.remove('active');
-            elements.swipeHint.classList.add('visible');
-            elements.swipeHint.classList.remove('hide');
+            // Don't show swipe hint since we have button now
+            elements.swipeHint.classList.remove('visible', 'hide');
         }
         // If transitioning from mobile to desktop, reset to default
         if (!state.isMobile && wasMobile) {
@@ -260,8 +261,13 @@ function handleLock() {
 
 // Handle toggle button click
 function handleToggle() {
-    // On mobile, this button is hidden, so this won't be called
-    if (state.isMobile) return;
+    if (state.isMobile) {
+        // On mobile, toggle expand/collapse
+        state.sidebarVisible = !state.sidebarVisible;
+        elements.sidebar.classList.toggle('mobile-visible', state.sidebarVisible);
+        elements.overlay.classList.toggle('active', state.sidebarVisible);
+        return;
+    }
     
     if (state.sidebarLocked) {
         // If locked, toggle collapsed state

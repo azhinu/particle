@@ -3,52 +3,62 @@
     {
       "name": "Feishin",
       "icon": "static/feishin.png",
-      "link": "https://feishin.home.mydomain.tld"
+      "link": "https://feishin.home.mydomain.tld",
+      "new_tab": false
     },
     {
       "name": "Kima",
       "icon": "static/kima.png",
-      "link": "https://kima.home.mydomain.tld"
+      "link": "https://kima.home.mydomain.tld",
+      "new_tab": false
     },
     {
       "name": "Aurral",
       "icon": "static/aurralogo.png",
-      "link": "https://aurral.home.mydomain.tld"
+      "link": "https://aurral.home.mydomain.tld",
+      "new_tab": false
     },
     {
       "name": "Spotiarr",
       "icon": "static/spotiarr.png",
-      "link": "https://spotiarr.home.mydomain.tld"
+      "link": "https://spotiarr.home.mydomain.tld",
+      "new_tab": false
     },
     {
       "name": "Seerr",
       "icon": "static/seerr.png",
-      "link": "https://seerr.home.mydomain.tld"
+      "link": "https://seerr.home.mydomain.tld",
+      "new_tab": false
     },
     {
       "name": "Jellyfin",
       "icon": "static/jellyfin.png",
-      "link": "https://jellyfin.home.mydomain.tld"
+      "link": "https://jellyfin.home.mydomain.tld",
+      "new_tab": false
     },
     {
       "name": "Soulseek",
       "icon": "static/soulseek.png",
-      "link": "https://slskd.home.mydomain.tld"
+      "link": "https://slskd.home.mydomain.tld",
+      "new_tab": false
     },
     {
       "name": "Kinklist",
       "icon": "static/kinklist2.png",
-      "link": "https://kinklist.home.mydomain.tld"
+      "link": "https://kinklist.home.mydomain.tld",
+      "new_tab": false
     },
     {
       "name": "Wishlist",
       "icon": "static/wishlist.png",
-      "link": "https://wishlist.home.mydomain.tld"
+      "link": "https://wishlist.home.mydomain.tld",
+      "new_tab": false
     },
     {
       "name": "SimpleLogin",
       "icon": "static/simplelogin.png",
-      "link": "https://simplelogin.home.mydomain.tld"
+      "link": "https://simplelogin.home.mydomain.tld",
+      "new_tab": false
     }
   ]
 }

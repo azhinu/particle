@@ -15,7 +15,8 @@ Particle is a customizable dashboard that aggregates links to your favorite web 
     {
       "name": "Service Name",
       "icon": "static/icon.png",
-      "link": "http://myservice.home.mydomain.tld:PORT"
+      "link": "http://myservice.home.mydomain.tld:PORT",
+      "new_tab": false
     }
   ]
 }
@@ -34,12 +35,14 @@ Examples:
 {
   "name": "Service 1",
   "icon": "static/kima.png",
-  "link": "http://localhost:8080"
+  "link": "http://localhost:8080",
+  "new_tab": false
 },
 {
   "name": "Service 2",
   "icon": "https://cdn.example.com/logo.svg",
-  "link": "http://localhost:3000"
+  "link": "http://localhost:3000",
+  "new_tab": false
 }
 ```
 

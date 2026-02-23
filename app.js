@@ -175,6 +175,12 @@ function switchToHome() {
 
 // Switch to service view
 function switchToService(service) {
+    // If new_tab is true, open in new tab instead of iframe
+    if (service.new_tab) {
+        window.open(service.link, '_blank');
+        return;
+    }
+
     state.currentView = service.name;
 
     // Update active button

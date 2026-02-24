@@ -13,10 +13,6 @@ const state = {
     sidebarVisible: false // For mobile: is sidebar visible?
 };
 
-let lastToggleTouchTime = 0;
-let lastServiceTouchTime = 0;
-let lastHomeTouchTime = 0;
-
 // DOM Elements
 const elements = {
     sidebar: null,
@@ -116,15 +112,13 @@ function setupEventListeners() {
         
         // If transitioning to mobile, show sidebar minimized
         if (state.isMobile && !wasMobile) {
-            state.sidebarVisible = false;
             state.sidebarExpanded = false;
-            elements.sidebar.classList.remove('mobile-visible', 'expanded');
-            elements.overlay.classList.remove('active');
+            elements.sidebar.classList.remove('expanded');
+            setSidebarVisible(false);
         }
         // If transitioning from mobile to desktop, reset to default
         if (!state.isMobile && wasMobile) {
-            state.sidebarVisible = false;
-            elements.sidebar.classList.remove('mobile-visible');
+            setSidebarVisible(false);
         }
 
         updateToggleIcon();
@@ -138,39 +132,33 @@ function setupEventListeners() {
     elements.lockBtn.addEventListener('click', handleLock);
 
     // Toggle button
-    elements.toggleBtn.addEventListener('click', () => {
-        if (Date.now() - lastToggleTouchTime < 500) return;
-        handleToggle();
-    });
-    elements.toggleBtn.addEventListener('touchend', (event) => {
-        lastToggleTouchTime = Date.now();
+    elements.toggleBtn.addEventListener('pointerup', (event) => {
         event.preventDefault();
         handleToggle();
+    });
+    elements.toggleBtn.addEventListener('keydown', (event) => {
+        handleActionKey(event, handleToggle);
     });
 
     // Home button
-    elements.homeBtn.addEventListener('click', () => {
-        if (Date.now() - lastHomeTouchTime < 500) return;
-        switchToHome();
-    });
-    elements.homeBtn.addEventListener('touchend', (event) => {
-        lastHomeTouchTime = Date.now();
+    elements.homeBtn.addEventListener('pointerup', (event) => {
         event.preventDefault();
         switchToHome();
+    });
+    elements.homeBtn.addEventListener('keydown', (event) => {
+        handleActionKey(event, switchToHome);
     });
 
     // Overlay click
     elements.overlay.addEventListener('click', handleOverlayClick);
 
     // Service buttons (delegated)
-    elements.servicesList.addEventListener('click', (event) => {
-        if (Date.now() - lastServiceTouchTime < 500) return;
-        handleServiceActivate(event);
-    });
-    elements.servicesList.addEventListener('touchend', (event) => {
-        lastServiceTouchTime = Date.now();
+    elements.servicesList.addEventListener('pointerup', (event) => {
         event.preventDefault();
         handleServiceActivate(event);
+    });
+    elements.servicesList.addEventListener('keydown', (event) => {
+        handleActionKey(event, () => handleServiceActivate(event));
     });
 
     // Setup touch events for swipe detection
@@ -186,6 +174,19 @@ function handleServiceActivate(event) {
     if (!service) return;
 
     switchToService(service);
+}
+
+function handleActionKey(event, action) {
+    if (event.key !== 'Enter' && event.key !== ' ') return;
+    event.preventDefault();
+    action();
+}
+
+function setSidebarVisible(isVisible) {
+    state.sidebarVisible = isVisible;
+    elements.sidebar.classList.toggle('mobile-visible', isVisible);
+    elements.overlay.classList.toggle('active', isVisible);
+    updateToggleIcon();
 }
 
 function updateToggleIcon() {
@@ -247,10 +248,7 @@ function handleSwipeLeft() {
     if (!state.isMobile) return;
     
     if (state.sidebarVisible) {
-        state.sidebarVisible = false;
-        elements.sidebar.classList.remove('mobile-visible');
-        elements.overlay.classList.remove('active');
-        elements.toggleIcon.src = 'static/right.svg';
+        setSidebarVisible(false);
     }
 }
 
@@ -259,10 +257,7 @@ function handleSwipeRight() {
     if (!state.isMobile) return;
     
     if (!state.sidebarVisible) {
-        state.sidebarVisible = true;
-        elements.sidebar.classList.add('mobile-visible');
-        elements.overlay.classList.add('active');
-        elements.toggleIcon.src = 'static/left.svg';
+        setSidebarVisible(true);
     }
 }
 
@@ -319,10 +314,7 @@ function handleLock() {
 function handleToggle() {
     if (state.isMobile) {
         // On mobile, toggle expand/collapse
-        state.sidebarVisible = !state.sidebarVisible;
-        elements.sidebar.classList.toggle('mobile-visible', state.sidebarVisible);
-        elements.overlay.classList.toggle('active', state.sidebarVisible);
-        updateToggleIcon();
+        setSidebarVisible(!state.sidebarVisible);
         return;
     }
     
@@ -344,10 +336,7 @@ function handleToggle() {
 function handleOverlayClick() {
     if (state.isMobile) {
         // On mobile, close sidebar when overlay is clicked
-        state.sidebarVisible = false;
-        elements.sidebar.classList.remove('mobile-visible');
-        elements.overlay.classList.remove('active');
-        updateToggleIcon();
+        setSidebarVisible(false);
     } else if (state.sidebarExpanded && !state.sidebarLocked) {
         state.sidebarExpanded = false;
         elements.sidebar.classList.remove('expanded');
@@ -370,10 +359,7 @@ function switchToHome() {
     serviceViews.forEach(view => view.classList.remove('active'));
 
     if (state.isMobile) {
-        state.sidebarVisible = false;
-        elements.sidebar.classList.remove('mobile-visible');
-        elements.overlay.classList.remove('active');
-        updateToggleIcon();
+        setSidebarVisible(false);
     }
 }
 
@@ -384,10 +370,7 @@ function switchToService(service) {
         window.open(service.link, '_blank');
         // Close sidebar on mobile even when opening in new tab
         if (state.isMobile) {
-            state.sidebarVisible = false;
-            elements.sidebar.classList.remove('mobile-visible');
-            elements.overlay.classList.remove('active');
-            updateToggleIcon();
+            setSidebarVisible(false);
         }
         return;
     }
@@ -425,10 +408,7 @@ function switchToService(service) {
 
     // Close sidebar on mobile
     if (state.isMobile) {
-        state.sidebarVisible = false;
-        elements.sidebar.classList.remove('mobile-visible');
-        elements.overlay.classList.remove('active');
-        updateToggleIcon();
+        setSidebarVisible(false);
     }
 }
 

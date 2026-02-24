@@ -56,6 +56,12 @@ body {
     width: var(--sidebar-expanded-width);
 }
 
+@media (hover: none) and (pointer: coarse) {
+    .sidebar:hover {
+        width: var(--sidebar-collapsed-width);
+    }
+}
+
 /* Sidebar expanded state (stays open, closes on outside click) */
 .sidebar.expanded {
     width: var(--sidebar-expanded-width);
@@ -80,7 +86,6 @@ body {
     padding: 4px 10px;
     display: flex;
     gap: 8px;
-    border-bottom: 1px solid var(--border-color);
     align-items: center;
     justify-content: flex-start;
 }

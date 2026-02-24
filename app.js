@@ -89,6 +89,10 @@ function renderServices() {
             <span class="nav-label">${service.name}</span>
         `;
         button.addEventListener('click', () => switchToService(service));
+        button.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            switchToService(service);
+        });
         elements.servicesList.appendChild(button);
     });
 }
@@ -124,11 +128,19 @@ function setupEventListeners() {
     // Lock button
     elements.lockBtn.addEventListener('click', handleLock);
 
-    // Toggle button
+    // Toggle button - add both click and touch handlers for mobile compatibility
     elements.toggleBtn.addEventListener('click', handleToggle);
+    elements.toggleBtn.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        handleToggle();
+    });
 
     // Home button
     elements.homeBtn.addEventListener('click', () => switchToHome());
+    elements.homeBtn.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        switchToHome();
+    });
 
     // Overlay click
     elements.overlay.addEventListener('click', handleOverlayClick);
@@ -198,6 +210,7 @@ function handleSwipeLeft() {
         state.sidebarVisible = false;
         elements.sidebar.classList.remove('mobile-visible');
         elements.overlay.classList.remove('active');
+        elements.toggleIcon.src = 'static/right.svg';
     }
 }
 
@@ -209,6 +222,7 @@ function handleSwipeRight() {
         state.sidebarVisible = true;
         elements.sidebar.classList.add('mobile-visible');
         elements.overlay.classList.add('active');
+        elements.toggleIcon.src = 'static/left.svg';
     }
 }
 
@@ -266,6 +280,8 @@ function handleToggle() {
         state.sidebarVisible = !state.sidebarVisible;
         elements.sidebar.classList.toggle('mobile-visible', state.sidebarVisible);
         elements.overlay.classList.toggle('active', state.sidebarVisible);
+        // Update icon
+        elements.toggleIcon.src = state.sidebarVisible ? 'static/left.svg' : 'static/right.svg';
         return;
     }
     
@@ -288,6 +304,7 @@ function handleOverlayClick() {
         state.sidebarVisible = false;
         elements.sidebar.classList.remove('mobile-visible');
         elements.overlay.classList.remove('active');
+        elements.toggleIcon.src = 'static/right.svg';
     } else if (state.sidebarExpanded && !state.sidebarLocked) {
         state.sidebarExpanded = false;
         elements.sidebar.classList.remove('expanded');
@@ -309,6 +326,14 @@ function switchToHome() {
     // Hide all service views
     const serviceViews = elements.servicesContainer.querySelectorAll('.service-view');
     serviceViews.forEach(view => view.classList.remove('active'));
+
+    // Close sidebar on mobile
+    if (state.isMobile) {
+        state.sidebarVisible = false;
+        elements.sidebar.classList.remove('mobile-visible');
+        elements.overlay.classList.remove('active');
+        elements.toggleIcon.src = 'static/right.svg';
+    }
 }
 
 // Switch to service view
@@ -316,6 +341,13 @@ function switchToService(service) {
     // If new_tab is true, open in new tab instead of iframe
     if (service.new_tab) {
         window.open(service.link, '_blank');
+        // Close sidebar on mobile even when opening in new tab
+        if (state.isMobile) {
+            state.sidebarVisible = false;
+            elements.sidebar.classList.remove('mobile-visible');
+            elements.overlay.classList.remove('active');
+            elements.toggleIcon.src = 'static/right.svg';
+        }
         return;
     }
 
@@ -351,6 +383,14 @@ function switchToService(service) {
 
     // Show current service view
     serviceView.classList.add('active');
+
+    // Close sidebar on mobile
+    if (state.isMobile) {
+        state.sidebarVisible = false;
+        elements.sidebar.classList.remove('mobile-visible');
+        elements.overlay.classList.remove('active');
+        elements.toggleIcon.src = 'static/right.svg';
+    }
 }
 
 // Create service view with iframe

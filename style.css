@@ -97,6 +97,7 @@ body {
     justify-content: center;
     transition: background-color 0.2s ease;
     flex-shrink: 0;
+    touch-action: manipulation;
 }
 
 .control-btn:hover {
@@ -128,16 +129,6 @@ body {
 .control-btn:hover img,
 .control-btn.active img {
     opacity: 1;
-}
-
-/* Toggle icon rotation */
-#toggleIcon {
-    transition: transform 0.3s ease;
-}
-
-.sidebar.expanded #toggleIcon,
-.sidebar.locked:not(.collapsed) #toggleIcon {
-    transform: rotate(180deg);
 }
 
 /* Lock button visibility - only when sidebar is open */
@@ -396,6 +387,13 @@ body {
 
     .greeting {
         font-size: 32px;
+    }
+
+    .greeting-container {
+        position: fixed;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
     }
 
     /* Overlay adjustments for mobile */

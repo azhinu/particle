@@ -2,6 +2,7 @@
 
 The one bookmark you need.
 
+![screenshot](misc/screenshot.png)
 
 ## Overview
 

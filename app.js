@@ -119,6 +119,8 @@ function setupEventListeners() {
             elements.sidebar.classList.remove('mobile-visible');
             elements.swipeHint.classList.remove('visible', 'hide');
         }
+
+        updateToggleIcon();
     };
 
     // Initial check
@@ -147,6 +149,22 @@ function setupEventListeners() {
 
     // Setup touch events for swipe detection
     setupTouchEvents();
+}
+
+function updateToggleIcon() {
+    if (!elements.toggleIcon) return;
+
+    if (state.isMobile) {
+        elements.toggleIcon.src = state.sidebarVisible ? 'static/left.svg' : 'static/right.svg';
+        return;
+    }
+
+    if (state.sidebarLocked) {
+        elements.toggleIcon.src = state.sidebarCollapsed ? 'static/right.svg' : 'static/left.svg';
+        return;
+    }
+
+    elements.toggleIcon.src = 'static/right.svg';
 }
 
 // Setup touch events for mobile swipe
@@ -271,6 +289,8 @@ function handleLock() {
         state.sidebarExpanded = false;
         elements.overlay.classList.remove('active');
     }
+
+    updateToggleIcon();
 }
 
 // Handle toggle button click
@@ -280,8 +300,7 @@ function handleToggle() {
         state.sidebarVisible = !state.sidebarVisible;
         elements.sidebar.classList.toggle('mobile-visible', state.sidebarVisible);
         elements.overlay.classList.toggle('active', state.sidebarVisible);
-        // Update icon
-        elements.toggleIcon.src = state.sidebarVisible ? 'static/left.svg' : 'static/right.svg';
+        updateToggleIcon();
         return;
     }
     
@@ -295,6 +314,8 @@ function handleToggle() {
         elements.sidebar.classList.toggle('expanded', state.sidebarExpanded);
         elements.overlay.classList.toggle('active', state.sidebarExpanded);
     }
+
+    updateToggleIcon();
 }
 
 // Handle overlay click
@@ -304,11 +325,12 @@ function handleOverlayClick() {
         state.sidebarVisible = false;
         elements.sidebar.classList.remove('mobile-visible');
         elements.overlay.classList.remove('active');
-        elements.toggleIcon.src = 'static/right.svg';
+        updateToggleIcon();
     } else if (state.sidebarExpanded && !state.sidebarLocked) {
         state.sidebarExpanded = false;
         elements.sidebar.classList.remove('expanded');
         elements.overlay.classList.remove('active');
+        updateToggleIcon();
     }
 }
 
@@ -332,7 +354,7 @@ function switchToHome() {
         state.sidebarVisible = false;
         elements.sidebar.classList.remove('mobile-visible');
         elements.overlay.classList.remove('active');
-        elements.toggleIcon.src = 'static/right.svg';
+        updateToggleIcon();
     }
 }
 
@@ -346,7 +368,7 @@ function switchToService(service) {
             state.sidebarVisible = false;
             elements.sidebar.classList.remove('mobile-visible');
             elements.overlay.classList.remove('active');
-            elements.toggleIcon.src = 'static/right.svg';
+            updateToggleIcon();
         }
         return;
     }
@@ -389,7 +411,7 @@ function switchToService(service) {
         state.sidebarVisible = false;
         elements.sidebar.classList.remove('mobile-visible');
         elements.overlay.classList.remove('active');
-        elements.toggleIcon.src = 'static/right.svg';
+        updateToggleIcon();
     }
 }
 

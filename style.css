@@ -138,9 +138,24 @@ body {
     transition: opacity 0.3s ease;
 }
 
+/* Desktop: show toggle only when lock is active */
+#toggleBtn {
+    display: none;
+}
+
+.sidebar.locked #toggleBtn {
+    display: flex;
+}
+
 .sidebar:hover #lockBtn,
 .sidebar.expanded #lockBtn,
 .sidebar.locked:not(.collapsed) #lockBtn {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Collapsed desktop: show lock button when not active */
+.sidebar:not(.locked):not(.expanded) #lockBtn {
     opacity: 1;
     pointer-events: auto;
 }
@@ -356,6 +371,10 @@ body {
 
     /* Show only toggle button on mobile */
     .sidebar-controls {
+        display: flex;
+    }
+
+    #toggleBtn {
         display: flex;
     }
 

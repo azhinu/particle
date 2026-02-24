@@ -1,7 +1,6 @@
 // App State
 const state = {
     services: [],
-    currentView: 'home',
     sidebarLocked: false,
     sidebarExpanded: false,
     sidebarCollapsed: false,
@@ -14,6 +13,10 @@ const state = {
     sidebarVisible: false // For mobile: is sidebar visible?
 };
 
+let lastToggleTouchTime = 0;
+let lastServiceTouchTime = 0;
+let lastHomeTouchTime = 0;
+
 // DOM Elements
 const elements = {
     sidebar: null,
@@ -22,12 +25,10 @@ const elements = {
     toggleIcon: null,
     homeBtn: null,
     servicesList: null,
-    mainContent: null,
     homeView: null,
     servicesContainer: null,
     overlay: null,
-    greeting: null,
-    swipeHint: null
+    greeting: null
 };
 
 // Initialize app
@@ -39,12 +40,10 @@ async function init() {
     elements.toggleIcon = document.getElementById('toggleIcon');
     elements.homeBtn = document.getElementById('homeBtn');
     elements.servicesList = document.getElementById('servicesList');
-    elements.mainContent = document.getElementById('mainContent');
     elements.homeView = document.getElementById('homeView');
     elements.servicesContainer = document.getElementById('servicesContainer');
     elements.overlay = document.getElementById('overlay');
     elements.greeting = document.getElementById('greeting');
-    elements.swipeHint = document.getElementById('swipeHint');
 
     // Load config
     await loadConfig();
@@ -56,8 +55,6 @@ async function init() {
     if (state.isMobile) {
         state.sidebarVisible = false;
         elements.sidebar.classList.remove('mobile-visible');
-        // Don't show swipe hint since we have a button now
-        elements.swipeHint.classList.remove('visible');
     }
 
     // Set greeting
@@ -79,30 +76,43 @@ async function loadConfig() {
 // Render service buttons
 function renderServices() {
     elements.servicesList.innerHTML = '';
-    
+    const fragment = document.createDocumentFragment();
+
     state.services.forEach(service => {
         const button = document.createElement('button');
         button.className = 'nav-btn';
         button.dataset.service = service.name;
-        button.innerHTML = `
-            <img src="${service.icon}" alt="${service.name}" onerror="this.src='static/home.svg'">
-            <span class="nav-label">${service.name}</span>
-        `;
-        button.addEventListener('click', () => switchToService(service));
-        button.addEventListener('touchend', (e) => {
-            e.preventDefault();
-            switchToService(service);
+
+        const img = document.createElement('img');
+        img.src = service.icon;
+        img.alt = service.name;
+        img.addEventListener('error', () => {
+            img.src = 'static/home.svg';
         });
-        elements.servicesList.appendChild(button);
+
+        const label = document.createElement('span');
+        label.className = 'nav-label';
+        label.textContent = service.name;
+
+        button.appendChild(img);
+        button.appendChild(label);
+        fragment.appendChild(button);
     });
+
+    elements.servicesList.appendChild(fragment);
 }
 
 // Setup event listeners
 function setupEventListeners() {
+    const isTouchDevice = () => {
+        return window.matchMedia('(hover: none) and (pointer: coarse)').matches
+            || navigator.maxTouchPoints > 0;
+    };
+
     // Detect if mobile
     const checkMobile = () => {
         const wasMobile = state.isMobile;
-        state.isMobile = window.innerWidth <= 768;
+        state.isMobile = window.innerWidth <= 768 || isTouchDevice();
         
         // If transitioning to mobile, show sidebar minimized
         if (state.isMobile && !wasMobile) {
@@ -110,14 +120,11 @@ function setupEventListeners() {
             state.sidebarExpanded = false;
             elements.sidebar.classList.remove('mobile-visible', 'expanded');
             elements.overlay.classList.remove('active');
-            // Don't show swipe hint since we have button now
-            elements.swipeHint.classList.remove('visible', 'hide');
         }
         // If transitioning from mobile to desktop, reset to default
         if (!state.isMobile && wasMobile) {
             state.sidebarVisible = false;
             elements.sidebar.classList.remove('mobile-visible');
-            elements.swipeHint.classList.remove('visible', 'hide');
         }
 
         updateToggleIcon();
@@ -130,25 +137,55 @@ function setupEventListeners() {
     // Lock button
     elements.lockBtn.addEventListener('click', handleLock);
 
-    // Toggle button - add both click and touch handlers for mobile compatibility
-    elements.toggleBtn.addEventListener('click', handleToggle);
-    elements.toggleBtn.addEventListener('touchend', (e) => {
-        e.preventDefault();
+    // Toggle button
+    elements.toggleBtn.addEventListener('click', () => {
+        if (Date.now() - lastToggleTouchTime < 500) return;
+        handleToggle();
+    });
+    elements.toggleBtn.addEventListener('touchend', (event) => {
+        lastToggleTouchTime = Date.now();
+        event.preventDefault();
         handleToggle();
     });
 
     // Home button
-    elements.homeBtn.addEventListener('click', () => switchToHome());
-    elements.homeBtn.addEventListener('touchend', (e) => {
-        e.preventDefault();
+    elements.homeBtn.addEventListener('click', () => {
+        if (Date.now() - lastHomeTouchTime < 500) return;
+        switchToHome();
+    });
+    elements.homeBtn.addEventListener('touchend', (event) => {
+        lastHomeTouchTime = Date.now();
+        event.preventDefault();
         switchToHome();
     });
 
     // Overlay click
     elements.overlay.addEventListener('click', handleOverlayClick);
 
+    // Service buttons (delegated)
+    elements.servicesList.addEventListener('click', (event) => {
+        if (Date.now() - lastServiceTouchTime < 500) return;
+        handleServiceActivate(event);
+    });
+    elements.servicesList.addEventListener('touchend', (event) => {
+        lastServiceTouchTime = Date.now();
+        event.preventDefault();
+        handleServiceActivate(event);
+    });
+
     // Setup touch events for swipe detection
     setupTouchEvents();
+}
+
+function handleServiceActivate(event) {
+    const button = event.target.closest('.nav-btn');
+    if (!button) return;
+
+    const serviceName = button.dataset.service;
+    const service = state.services.find(item => item.name === serviceName);
+    if (!service) return;
+
+    switchToService(service);
 }
 
 function updateToggleIcon() {
@@ -169,8 +206,8 @@ function updateToggleIcon() {
 
 // Setup touch events for mobile swipe
 function setupTouchEvents() {
-    document.addEventListener('touchstart', handleTouchStart, false);
-    document.addEventListener('touchend', handleTouchEnd, false);
+    document.addEventListener('touchstart', handleTouchStart, { passive: true });
+    document.addEventListener('touchend', handleTouchEnd, { passive: true });
 }
 
 // Handle touch start
@@ -195,9 +232,6 @@ function handleTouchEnd(e) {
         return;
     }
 
-    // Hide hint on first swipe
-    hideSwipeHint();
-
     // Left swipe (diffX > 0 means movement to left)
     if (diffX > minSwipeDistance) {
         handleSwipeLeft();
@@ -205,18 +239,6 @@ function handleTouchEnd(e) {
     // Right swipe (diffX < 0 means movement to right)
     else if (diffX < -minSwipeDistance) {
         handleSwipeRight();
-    }
-}
-
-// Hide swipe hint after first interaction
-function hideSwipeHint() {
-    if (!elements.swipeHint) return;
-    
-    if (elements.swipeHint.classList.contains('visible')) {
-        elements.swipeHint.classList.add('hide');
-        setTimeout(() => {
-            elements.swipeHint.classList.remove('visible', 'hide');
-        }, 400);
     }
 }
 
@@ -336,8 +358,6 @@ function handleOverlayClick() {
 
 // Switch to home view
 function switchToHome() {
-    state.currentView = 'home';
-    
     // Update active button
     document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
     elements.homeBtn.classList.add('active');
@@ -349,7 +369,6 @@ function switchToHome() {
     const serviceViews = elements.servicesContainer.querySelectorAll('.service-view');
     serviceViews.forEach(view => view.classList.remove('active'));
 
-    // Close sidebar on mobile
     if (state.isMobile) {
         state.sidebarVisible = false;
         elements.sidebar.classList.remove('mobile-visible');
@@ -372,8 +391,6 @@ function switchToService(service) {
         }
         return;
     }
-
-    state.currentView = service.name;
 
     // Update active button
     document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));

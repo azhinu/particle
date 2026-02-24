@@ -279,7 +279,7 @@ body {
     overflow: hidden;
 }
 
-.sidebar.locked .main-content {
+.sidebar.locked:not(.collapsed) ~ .main-content {
     margin-left: var(--sidebar-expanded-width);
 }
 
@@ -458,98 +458,3 @@ body {
     }
 }
 
-/* Swipe animation enhancement */
-@media (max-width: 768px) {
-    @keyframes slideInFromLeft {
-        from {
-            transform: translateX(-100%);
-        }
-        to {
-            transform: translateX(0);
-        }
-    }
-
-    @keyframes slideOutToLeft {
-        from {
-            transform: translateX(0);
-        }
-        to {
-            transform: translateX(-100%);
-        }
-    }
-
-    .sidebar {
-        will-change: transform;
-    }
-}
-
-/* Mobile Swipe Hint */
-.swipe-hint {
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    display: none;
-    z-index: 500;
-    animation: fadeInHint 0.6s ease-out;
-}
-
-.swipe-hint.visible {
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
-}
-
-.swipe-hint-icon {
-    width: 24px;
-    height: 24px;
-    margin-right: 6px;
-    opacity: 0.8;
-    flex-shrink: 0;
-    filter: brightness(0) saturate(100%) invert(76%) sepia(7%) saturate(846%) hue-rotate(177deg) brightness(92%) contrast(86%);
-}
-.swipe-hint-label {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 6px 12px;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-radius: 16px;
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--text-primary);
-  white-space: nowrap;
-}
-
-@keyframes fadeInHint {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes fadeOutHint {
-    from {
-        opacity: 1;
-        transform: translateY(0);
-    }
-    to {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-}
-
-.swipe-hint.hide {
-    animation: fadeOutHint 0.4s ease-out forwards;
-}
-
-/* Desktop: hide swipe hint */
-@media (min-width: 769px) {
-    .swipe-hint {
-        display: none !important;
-    }
-}
